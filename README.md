@@ -2,15 +2,23 @@
 
 **hyint** is a Python package to computes indefinite integral of univariable expressions 
 with constant coeficients using symbolic-numeric methodolgy. It is built on top of **sympy** 
-symbolic manipulation ecosystem of Python, but applies numerical methods to find integrals. 
-It can solve a large subset of basic standard integrals (polynomials, exponential/logarithmic, 
+symbolic manipulation ecosystem of Python, but applies numerical methods to solve integral
+problems. 
+
+**hyint** can solve a large subset of basic standard integrals (polynomials, exponential/logarithmic, 
 trigonometric and hyperbolic, inverse trigonometric and hyperbolic, rational and square root) (
 see [The Basis of Symbolic-Numeric Integration](https://github.com/SciML/SymbolicNumericIntegration.jl/blob/main/docs/theory.ipynb)
-for a brief introduction to the algorithm.
+for a brief introduction to the algorithm. It can even find some integrals not found by the
+current version of **sympy.integrate**.
 	
-The symbolic part of the algorithm is similar to the Risch-Bronstein's poor man's integrator 
-and generates a list of ansatz (candidate terms). The numerical part uses sparse regression 
-adopted from the Sparse identification of nonlinear dynamics (SINDy) algorithm. 
+The symbolic part of the algorithm is similar (but not identical) to the Risch-Bronstein's poor man's integrator 
+and generates a list of ansatzes (candidate terms). The numerical part uses sparse regression 
+adopted from the Sparse identification of nonlinear dynamics (SINDy) algorithm to prune down the 
+ansatzes and find the corresponding coefficients. 
+
+# Prerequisites
+
+**hyint** requires **numpy**/**scipy** and **sympy** to have be installed.
 
 # Installation
 
@@ -42,9 +50,6 @@ Out: -x**2*cos(2*x)/2 + x*sin(2*x)/2 + cos(2*x)/4
 In: hyint.integrate(sqrt(x**2 + x - 1), x)
 Out: x*sqrt(x**2 + x - 1)/2 + sqrt(x**2 + x - 1)/4 - 5*log(2*x + 2*sqrt(x**2 + x - 1) + 1)/8
 
-In: hyint.integrate(1/(x**2 + 4), x)
-Out: atan(x/2)/2
-
 In: hyint.integrate(x/(x**2 + 4), x)
 Out: log(x**2 + 4)/2
 
@@ -72,12 +77,16 @@ Out: exp(x)/x
 In: hyint.integrate(exp(x**2) , x)
 Out: 0.886226925452758*erfi(x)
 
+# sympy.integrate does not solve this example:
+In: hyint.integrate(sqrt(1 - sin(x)), x)
+Out: 2*cos(x)/sqrt(1 - sin(x))
+
 ```
 
 # Citation
 
-**hyint** is a rewrite of **SymbolicNumericIntegration.jl** from Julia into Python. If you use it 
-in your research, please cite [this paper](https://arxiv.org/abs/2201.12468):
+**hyint** is a adopted from and is a rewrite of **SymbolicNumericIntegration.jl**. 
+Citation: [Symbolic-Numeric Integration of Univariate Expressions based on Sparse Regression](https://arxiv.org/abs/2201.12468):
 
 ```
 @article{Iravanian2022,
