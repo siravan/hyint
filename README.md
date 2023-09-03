@@ -1,20 +1,11 @@
 # hyint: Hybrid (Symbolic-Numeric) Integration Package 
 
-**hyint** is a Python package to computes indefinite integral of univariable expressions 
-with constant coeficients using symbolic-numeric methodolgy. It is built on top of **sympy** 
-symbolic manipulation ecosystem of Python, but applies numerical methods to solve integral
-problems. 
+**hyint** is a Python package to computes indefinite integral of univariable expressions with constant coeficients using symbolic-numeric methodolgy. It is built on top of **sympy** symbolic manipulation ecosystem of Python, but applies numerical methods to solve integral problems. 
 
-**hyint** can solve a large subset of basic standard integrals (polynomials, exponential/logarithmic, 
-trigonometric and hyperbolic, inverse trigonometric and hyperbolic, rational and square root) (
-see [The Basis of Symbolic-Numeric Integration](https://github.com/SciML/SymbolicNumericIntegration.jl/blob/main/docs/theory.ipynb)
-for a brief introduction to the algorithm. It can even find some integrals not found by the
-current version of **sympy.integrate**.
+**hyint** can solve a large subset of basic standard integrals (polynomials, exponential/logarithmic, trigonometric and hyperbolic, inverse trigonometric and hyperbolic, rational and square root) (
+see [The Basis of Symbolic-Numeric Integration](https://github.com/SciML/SymbolicNumericIntegration.jl/blob/main/docs/theory.ipynb) for a brief introduction to the algorithm. It can even find some integrals not found by the current version of **sympy.integrate**.
 	
-The symbolic part of the algorithm is similar (but not identical) to the Risch-Bronstein's poor man's integrator 
-and generates a list of ansatzes (candidate terms). The numerical part uses sparse regression 
-adopted from the Sparse identification of nonlinear dynamics (SINDy) algorithm to prune down the 
-ansatzes and find the corresponding coefficients. 
+The symbolic part of the algorithm is similar (but not identical) to [the Risch-Bronstein's poor man's integrator](http://www-sop.inria.fr/cafe/Manuel.Bronstein/pmint/) and generates a list of ansatzes (candidate terms). The numerical part uses sparse regression adopted from the Sparse identification of nonlinear dynamics (SINDy) algorithm to prune down the ansatzes and find the corresponding coefficients. 
 
 # Prerequisites
 
@@ -30,8 +21,9 @@ pip install hyint
 
 # Tutorial
 
-The main function exported by **hyint** is `integrate(eq, x)`. It accepts two arguments, where 
-`eq` is a univariable expression in `x'. It results either the integral or 0 otherwise. 
+## Basic Usage
+
+The main function exported by **hyint** is `integrate(eq, x)`. It accepts two arguments, where `eq` is a univariable expression in `x'. It results either the integral or 0 otherwise. 
 
 Some examples:
 
@@ -83,10 +75,38 @@ Out: 2*cos(x)/sqrt(1 - sin(x))
 
 ```
 
+## As an Ansatz Generator
+
+**hyint** can be used as an standalone integrator (`integrate(eq, x)`); however, it is also useful as a helper untility for other integration routines by running `hints(eq, x)`, which returns a filtered list of ansatzes. In this role, `eq` can have symbolic constants in addition to the numerical ones. 
+
+The following example shows how it can augment `heurisch` integrator. `heurisch` is one of the **sympy** integrators and is a true symbolic implementation of the the Risch-Bronstein's poor man's algorithm). It has a `hints` arguments that can accept a list of ansatzes from **hyint**.
+
+```
+In: from sympy import sqrt
+In: from sympy.integrals.heurisch import heurisch
+In: from sympy.abc import a, x, y
+In: import hyint   
+
+In: y = log(log(x) + a) / x
+
+In: heurisch(y, x)
+Out:    # None is returned, meaning no solution is found
+
+In: hints = hyint.hints(y, x)
+In: print(hints)
+Out: [log(a + log(x)), log(x)*log(a + log(x)), log(x)]
+    
+In: heurisch(y, x, hints=hints)
+Out: a*log(a + log(x)) + log(x)*log(a + log(x)) - log(x)    
+```
+
+## Testing
+
+A test suite of 170 basic integrals can be run as `hyint.run_tests()`.
+
 # Citation
 
-**hyint** is a adopted from and is a rewrite of **SymbolicNumericIntegration.jl**. 
-Citation: [Symbolic-Numeric Integration of Univariate Expressions based on Sparse Regression](https://arxiv.org/abs/2201.12468):
+**hyint** is a adopted from and is a rewrite of **SymbolicNumericIntegration.jl**. Citation: [Symbolic-Numeric Integration of Univariate Expressions based on Sparse Regression](https://arxiv.org/abs/2201.12468):
 
 ```
 @article{Iravanian2022,

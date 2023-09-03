@@ -4,13 +4,13 @@ build-backend = "hatchling.build"
 
 [project]
 name = "hyint"
-version = "0.2.1"
+version = "0.3.1"
 authors = [
   { name="Shahriar Iravanian", email="siravan@svtsim.com" },
 ]
 description = "Hybrid (Symbolic-Numeric) Integration Package (based on sympy)"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: BSD License",

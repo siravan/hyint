@@ -1,4 +1,5 @@
-from sympy import * 
+from sympy import *
+from sympy.integrals.heurisch import heurisch 
 from . import hyint
 
 x = Symbol('x')
@@ -195,20 +196,32 @@ basic_integrals = [
 
 #####################################################################
 
-def run_test():
-	n = 0
-	k = 0
+def run_tests(try_heurisch=False):
+    n = 0
+    ks = 0
+    kh = 0
+	
+    for eq in basic_integrals:
+        n += 1
+        try:
+            sol = hyint.integrate(eq, x)
+		    
+            if sol:
+                ks += 1
 
-	for eq in basic_integrals:
-		n += 1
-		try:
-			sol = hyint.integrate(eq, x)
-			print(eq, " => ", sol)	
-			if sol != 0:
-				k += 1
-		except Exception as e:
-			print(e)
+            if try_heurisch:
+                h = heurisch(eq, x)		        
+                if h:
+                    kh += 1		            
+                print(f'{eq} => {sol} ({h})')	
+            else:
+                print(f'{eq} => {sol}')	
 
-	print(f"{k} out of {n}")
+        except Exception as e:
+            print(e)
+
+    print(f"{ks} out of {n}")
+    if try_heurisch:
+    	print(f"{kh} out of {n} for heurisch")
 	
 	
