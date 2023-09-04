@@ -96,9 +96,9 @@ def hints(eq, x, **kwargs):
     Examples
     ========
     
-    >>> from sympy import sqrt
+    >>> from sympy import log
     >>> from sympy.integrals.heurisch import heurisch
-    >>> from sympy.abc import a, x, y
+    >>> from sympy.abc import a, x
     >>> import hyint   
 
     >>> y = log(log(x) + a) / x

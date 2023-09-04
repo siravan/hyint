@@ -82,9 +82,9 @@ Out: 2*cos(x)/sqrt(1 - sin(x))
 The following example shows how it can augment `heurisch` integrator. `heurisch` is one of the **sympy** integrators and is a true symbolic implementation of the the Risch-Bronstein's poor man's algorithm). It has a `hints` arguments that can accept a list of ansatzes from **hyint**.
 
 ```
-In: from sympy import sqrt
+In: from sympy import log
 In: from sympy.integrals.heurisch import heurisch
-In: from sympy.abc import a, x, y
+In: from sympy.abc import a, x
 In: import hyint   
 
 In: y = log(log(x) + a) / x
